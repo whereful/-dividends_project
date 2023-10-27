@@ -15,13 +15,11 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @Scheduled
- * - 기본적으로 scheduler 스레드는 1개만 형성
- *
+ * @Scheduled - 기본적으로 scheduler 스레드는 1개만 형성
+ * <p>
  * test1에서 10초 정지하기 때문에
  * test2의 작업이 10초 안에 수행되는 것을 기대하였으나
  * 스레드가 1개이기 때문에 test1의 작업이 완료되어야
@@ -39,7 +37,8 @@ public class ScraperScheduler {
 
     // 일정 주기마다 수행
     @Scheduled(cron = "${scheduler.scrap.yahoo}")
-    @CacheEvict(value = CacheKey.KEY_FINANCE, allEntries = true) // redis에서 finance로 엮인 것은 전부 지운다
+    @CacheEvict(value = CacheKey.KEY_FINANCE, allEntries = true)
+    // redis에서 finance로 엮인 것은 전부 지운다
     public void yahooFinanceScheduling() {
         log.info("scraping scheduler is started");
 
@@ -51,7 +50,7 @@ public class ScraperScheduler {
             log.info("scraping scheduler is started -> " + company.getName());
 
             ScrapedResult scrapedResult = this.yahooFinanceScraper.scrap(
-                            new Company(company.getTicker(), company.getName()));
+                    new Company(company.getTicker(), company.getName()));
 
             // 스크래핑한 배당금 정보 중 데이터베이스에 없는 정보 저장
             scrapedResult.getDividends().stream()

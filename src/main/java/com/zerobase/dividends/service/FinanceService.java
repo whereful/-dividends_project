@@ -25,12 +25,6 @@ public class FinanceService {
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
-    /**
-     * exceptionhandler 작동함
-     * @param companyName
-     * @return
-     */
-
     // 요청이 자주 들어오는가?
     // 자주 변경되는 데이터인가?
 

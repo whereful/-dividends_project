@@ -25,7 +25,6 @@ public class MemberEntity implements UserDetails {
     private Long id;
     private String username;
     private String password;
-
     private List<String> roles;
 
     @Override

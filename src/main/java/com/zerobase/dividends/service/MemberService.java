@@ -28,11 +28,7 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new NoUserException());
     }
 
-    /**
-     * exceptionhandler 작동함
-     * @param member
-     * @return
-     */
+
     public MemberEntity register(Auth.SignUp member) {
         boolean exists = this.memberRepository.existsByUsername(member.getUsername());
         if (exists) {
@@ -44,11 +40,6 @@ public class MemberService implements UserDetailsService {
     }
 
 
-    /**
-     * exceptionhandler 작동함
-     * @param member
-     * @return
-     */
     public MemberEntity authenticate(Auth.SignIn member) {
         MemberEntity user = this.memberRepository.findByUsername(member.getUsername())
                 .orElseThrow(() -> new NoUserException());

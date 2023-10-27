@@ -17,10 +17,11 @@ import java.util.List;
 
 /**
  * ---------------------------------------------------------------------------------------------
+ *
  * @PreAuthorize is not working when authorizeHttpRequests method is used in SecurityConfiguration Class
- *
+ * <p>
  * To be working, use authorizeRequests method instead of authorizeHttpRequests
- *
+ * <p>
  * https://github.com/spring-projects/spring-security/issues/12861
  * ---------------------------------------------------------------------------------------------
  */
@@ -50,6 +51,7 @@ public class CompanyController {
 
     /**
      * 회사 및 배당금 정보 추가
+     *
      * @param request
      * @return
      */
