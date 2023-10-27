@@ -1,5 +1,6 @@
 package com.zerobase.dividends.scraper;
 
+import com.zerobase.dividends.exception.impl.NotFoundCompanyException;
 import com.zerobase.dividends.model.Company;
 import com.zerobase.dividends.model.Dividend;
 import com.zerobase.dividends.model.ScrapedResult;
@@ -83,9 +84,8 @@ public class YahooFinanceScraper implements Scraper {
 
             return new Company(ticker, title);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new NotFoundCompanyException();
         }
-        return null;
     }
 }

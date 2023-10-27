@@ -1,5 +1,8 @@
 package com.zerobase.dividends.service;
 
+import com.zerobase.dividends.exception.impl.AlreadyExistCompanyException;
+import com.zerobase.dividends.exception.impl.NoCompanyException;
+import com.zerobase.dividends.exception.impl.NotFoundCompanyException;
 import com.zerobase.dividends.model.Company;
 import com.zerobase.dividends.model.ScrapedResult;
 import com.zerobase.dividends.persist.entity.CompanyEntity;
@@ -16,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +35,7 @@ public class CompanyService {
     public Company save(String ticker) {
         boolean exists = this.companyRepository.existsByTicker(ticker);
         if (exists) {
-            throw new RuntimeException("already exists ticker -> " + ticker);
+            throw new AlreadyExistCompanyException();
         }
         return storeCompanyAndDividend(ticker);
     }
@@ -46,7 +48,7 @@ public class CompanyService {
         Company company = this.yahooFinanceScraper.scrapCompanyByTicker(ticker);
 
         if (ObjectUtils.isEmpty(company)) {
-            throw new RuntimeException("failed to scrap ticker -> " + ticker);
+            throw new NotFoundCompanyException();
         }
 
         // ticker를 기준으로 회사를 스크래핑
@@ -91,7 +93,7 @@ public class CompanyService {
 
     public String deleteCompany(String ticker) {
         CompanyEntity company = this.companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회사입니다."));
+                .orElseThrow(() -> new NoCompanyException());
 
         this.dividendRepository.deleteAllByCompanyId(company.getId());
         this.companyRepository.delete(company);

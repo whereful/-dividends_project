@@ -68,7 +68,7 @@ public class CompanyController {
 
     @DeleteMapping("/{ticker}")
     @PreAuthorize("hasRole('WRITE')") // 쓰기 권한이 있는 유저만 해당 api 호출
-    public ResponseEntity<?> deleeteCompany(@PathVariable String ticker) {
+    public ResponseEntity<?> deleteCompany(@PathVariable String ticker) {
         String companyName = this.companyService.deleteCompany(ticker);
         this.clearFinanceCache(companyName);
         return ResponseEntity.ok(companyName);

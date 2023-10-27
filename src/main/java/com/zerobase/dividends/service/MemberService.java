@@ -1,5 +1,8 @@
 package com.zerobase.dividends.service;
 
+import com.zerobase.dividends.exception.impl.AlreadyExistUserException;
+import com.zerobase.dividends.exception.impl.NoUserException;
+import com.zerobase.dividends.exception.impl.UnMatchPasswordException;
 import com.zerobase.dividends.model.Auth;
 import com.zerobase.dividends.model.MemberEntity;
 import com.zerobase.dividends.persist.repository.MemberRepository;
@@ -7,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +21,22 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         return this.memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("couldn't find user -> " + username));
+                .orElseThrow(() -> new NoUserException());
     }
 
+    /**
+     * exceptionhandler 작동함
+     * @param member
+     * @return
+     */
     public MemberEntity register(Auth.SignUp member) {
         boolean exists = this.memberRepository.existsByUsername(member.getUsername());
         if (exists) {
-            throw new RuntimeException("이미 사용중인 아이디입니다.");
+            throw new AlreadyExistUserException();
         }
         member.setPassword(this.passwordEncoder.encode(member.getPassword()));
         MemberEntity memberEntity = this.memberRepository.save(member.toEntity());
@@ -36,12 +44,17 @@ public class MemberService implements UserDetailsService {
     }
 
 
+    /**
+     * exceptionhandler 작동함
+     * @param member
+     * @return
+     */
     public MemberEntity authenticate(Auth.SignIn member) {
         MemberEntity user = this.memberRepository.findByUsername(member.getUsername())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 ID입니다."));
+                .orElseThrow(() -> new NoUserException());
 
         if (!this.passwordEncoder.matches(member.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new UnMatchPasswordException();
         }
 
         return user;
