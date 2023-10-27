@@ -1,23 +1,37 @@
 package com.zerobase.dividends.web;
 
 import com.zerobase.dividends.model.Company;
+import com.zerobase.dividends.model.constants.CacheKey;
 import com.zerobase.dividends.persist.entity.CompanyEntity;
 import com.zerobase.dividends.service.CompanyService;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * ---------------------------------------------------------------------------------------------
+ * @PreAuthorize is not working when authorizeHttpRequests method is used in SecurityConfiguration Class
+ *
+ * To be working, use authorizeRequests method instead of authorizeHttpRequests
+ *
+ * https://github.com/spring-projects/spring-security/issues/12861
+ * ---------------------------------------------------------------------------------------------
+ */
 @RestController
 @RequestMapping("/company") // 경로의 공통된 부분
 @AllArgsConstructor
 public class CompanyController {
 
     private final CompanyService companyService;
+
+    private final CacheManager redisCacheManager;
 
     @GetMapping("/autocomplete")
     public ResponseEntity<?> autocomplete(
@@ -28,6 +42,7 @@ public class CompanyController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('READ')") // 읽기 권한이 있는 유저만 해당 api 호출
     public ResponseEntity<?> searchCompany(final Pageable pageable) {
         Page<CompanyEntity> companyEntityList = companyService.getAllCompany(pageable);
         return ResponseEntity.ok(companyEntityList);
@@ -39,6 +54,7 @@ public class CompanyController {
      * @return
      */
     @PostMapping
+    @PreAuthorize("hasRole('WRITE')") // 쓰기 권한이 있는 유저만 해당 api 호출
     public ResponseEntity<?> addCompany(@RequestBody Company request) {
         String ticker = request.getTicker().trim();
         if (ObjectUtils.isEmpty(ticker)) {
@@ -50,9 +66,16 @@ public class CompanyController {
         return ResponseEntity.ok(company);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleeteCompany() {
-        return null;
+    @DeleteMapping("/{ticker}")
+    @PreAuthorize("hasRole('WRITE')") // 쓰기 권한이 있는 유저만 해당 api 호출
+    public ResponseEntity<?> deleeteCompany(@PathVariable String ticker) {
+        String companyName = this.companyService.deleteCompany(ticker);
+        this.clearFinanceCache(companyName);
+        return ResponseEntity.ok(companyName);
+    }
+
+    public void clearFinanceCache(String companyName) {
+        this.redisCacheManager.getCache(CacheKey.KEY_FINANCE).evict(companyName);
     }
 
 }
