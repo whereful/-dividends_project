@@ -1,10 +1,7 @@
 package com.zerobase.dividends.persist.entity;
 
 import com.zerobase.dividends.model.Dividend;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,6 +12,13 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"companyId", "date"}
+                )
+        }
+) // 복합 유니크 키 설정
 public class DividendEntity {
 
     @Id
