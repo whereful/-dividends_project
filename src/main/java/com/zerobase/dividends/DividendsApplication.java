@@ -2,6 +2,7 @@ package com.zerobase.dividends;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -9,9 +10,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @EnableScheduling // 스케줄러 사용하기 위해 작성되어야 함
+@EnableCaching // 캐시 기능 사용하기 위해 작성되어야 함
 public class DividendsApplication {
     public static void main(String[] args) {
         SpringApplication.run(DividendsApplication.class, args);
-        System.out.println("main -> " + Thread.currentThread().getName());
     }
 }
