@@ -1,6 +1,6 @@
-package com.zerobase.persist.repository;
+package com.zerobase.dividends.persist.repository;
 
-import com.zerobase.persist.entity.DividendEntity;
+import com.zerobase.dividends.persist.entity.DividendEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

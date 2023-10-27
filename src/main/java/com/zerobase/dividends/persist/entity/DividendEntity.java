@@ -1,5 +1,6 @@
-package com.zerobase.persist.entity;
+package com.zerobase.dividends.persist.entity;
 
+import com.zerobase.dividends.model.Dividend;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.rmi.registry.LocateRegistry;
 import java.time.LocalDateTime;
 
 @Entity(name = "DIVIDEND")
@@ -23,4 +23,10 @@ public class DividendEntity {
     private Long companyId;
     private LocalDateTime date;
     private String dividend;
+
+    public DividendEntity(Long companyId, Dividend dividend) {
+        this.companyId = companyId;
+        this.date = dividend.getDate();
+        this.dividend = dividend.getDividend();
+    }
 }

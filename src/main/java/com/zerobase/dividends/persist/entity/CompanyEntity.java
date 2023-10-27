@@ -1,5 +1,6 @@
-package com.zerobase.persist.entity;
+package com.zerobase.dividends.persist.entity;
 
+import com.zerobase.dividends.model.Company;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,10 @@ public class CompanyEntity {
 
     @Column(unique = true)
     private String ticker;
-
     private String name;
+
+    public CompanyEntity(Company company) {
+        this.name = company.getName();
+        this.ticker = company.getTicker();
+    }
 }
