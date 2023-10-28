@@ -12,6 +12,7 @@
 1. spring boot 2.x.x 과 spring boot 3.x.x 에서의 spring security 코드 차이 
 - https://velog.io/@hwsa1004/SpringBoot-3.1.0-SpringSecurity-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0
 - https://devhan.tistory.com/310
+- https://wikidocs.net/162150
 
 2. java.lang.ClassNotFoundException: javax.xml.bind.DatatypeConverter
 - https://pekahblog.tistory.com/62
